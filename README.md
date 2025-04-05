@@ -25,9 +25,3 @@ To get the project running locally, follow these steps:
 ```bash
 git clone https://github.com/your-username/banking-app.git
 cd banking-app
-
-### 2. Install Backend Dependecies
-```bash
-git cd backend
-cd npm install
-

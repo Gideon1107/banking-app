@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { sendSignInEmail } from "../util/email.js";
+import { sendSignInEmail } from "../util/email";
 import geoip from 'geoip-lite';
 import passport from 'passport';
 

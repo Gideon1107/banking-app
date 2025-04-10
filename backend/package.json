@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev src/server.ts"
+    "dev": "ts-node-dev src/server.ts",
+    "test-connection": "ts-node src/test-connection.ts",
+    "generate": "drizzle-kit generate",
+    "push": "drizzle-kit push"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +20,7 @@
     "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.6",
     "drizzle-orm": "^0.41.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
@@ -39,7 +43,6 @@
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/pg": "^8.11.11",
-    "drizzle-kit": "^0.30.6",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   }

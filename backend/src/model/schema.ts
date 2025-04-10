@@ -1,4 +1,4 @@
-import { pgTable, text, date, boolean, timestamp, integer, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, date, boolean, timestamp, integer, varchar, bigint } from "drizzle-orm/pg-core";
 import { InferModel } from "drizzle-orm";
 import { sql } from 'drizzle-orm';
 
@@ -16,6 +16,7 @@ export const users = pgTable("users", {
   created_at: timestamp("created_at").defaultNow(),
 });
 
+
 // Account Details Table
 export const accountDetails = pgTable("accountDetails", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()`), 
@@ -27,9 +28,11 @@ export const accountDetails = pgTable("accountDetails", {
   created_at: timestamp("created_at").defaultNow(), 
 });
 
+
 // Type Inference for Users
 export type User = InferModel<typeof users>;
 export type NewUser = InferModel<typeof users, "insert">;
+
 
 // Type Inference for Account Details
 export type AccountDetail = InferModel<typeof accountDetails>;

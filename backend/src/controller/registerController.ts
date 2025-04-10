@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { sendEmail } from "../util/email.js";
+import { sendActivationEmail } from "../util/email.js";
 import { db } from "../db.js";
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
-import { users , accountDetails} from "../schema.js";
+import { users , accountDetails} from "../model/schema";
 import { generateAccountNumber } from '../util/generateAcct.js';
 
 
@@ -44,7 +44,7 @@ try {
     
     // Send activation email
     try {
-      await sendEmail(email, activationLink);
+      await sendActivationEmail(email, activationLink);
     } catch (emailError) {
     return res.status(400).json({emailError: "Error sending email:"});
     
@@ -133,6 +133,14 @@ export const createAccountInfo = async (req: Request, res: Response): Promise<an
         if (!existingUser[0]) {
                 return res.status(404).json({ error: "User not found." });
             }
+        
+        // Check if the account type already exists for the user
+        const userAccounts = await db.select().from(accountDetails).where(eq(accountDetails.user_id, user_id));
+        const existingAccountType = userAccounts.some((acct) => acct.account_type === account_Type);
+
+        if (existingAccountType) {
+            return res.status(409).json({ error: 'Account type already exists.' });
+        }
         //Generate a unique account number
         const account_number = await generateAccountNumber();
        

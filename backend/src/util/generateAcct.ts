@@ -3,8 +3,8 @@ import { eq } from 'drizzle-orm';
 import { accountDetails } from '../model/schema.js'; 
 
 export const generateAccountNumber = async () => {
-    const min = 1000000000; 
-    const max = 9999999999; 
+    const min = 100000000; 
+    const max = 999999999; 
     let accountNumber;
     let existingAccount;
 

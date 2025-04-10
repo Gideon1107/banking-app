@@ -1,6 +1,6 @@
 import passport from 'passport';
 import bcrypt from 'bcrypt'
-import { db } from "../db";
+import { db } from "../util/db";
 import { eq } from 'drizzle-orm';
 import { users,accountDetails} from "../model/schema";
 import { Strategy as LocalStrategy } from 'passport-local';
@@ -9,10 +9,10 @@ import { Strategy as LocalStrategy } from 'passport-local';
 passport.use(new LocalStrategy({
     usernameField: 'acctNumber',
     passwordField: 'password'
-   
+
     },
     ( async(acctNumber, password, done) => {
-      
+
        try {
         const accountNumber = Number(acctNumber);
 
@@ -23,12 +23,12 @@ passport.use(new LocalStrategy({
         // Check if the account number exists
          let acctInfo= await db.select()
          .from(accountDetails)
-         .where(eq(accountDetails.account_number, Number(acctNumber)));
+         .where(eq(accountDetails.account_number, accountNumber));
 
          if(!acctInfo[0]){
             return done(null, false, { message: 'Account number not found' });
          }
-        
+
          // Check if the user exists
          const user = await db.select()
          .from(users)
@@ -45,21 +45,21 @@ passport.use(new LocalStrategy({
         if (!matchPassword) {
                 return done(null, false, { message: 'Incorrect password' });
         }
-        
+
         // Check if the user Account is active
         if (!user[0].isactive) {
             return done(null, false, { message: 'You need to activate your acount to login' });
         }
-         
+
         //Concatenate userInfo and accountInfo information
         const userWithAccount = {
             ...user[0],
             account: acctInfo[0],
           };
-          
+
           return done(null, userWithAccount);
-      
-          
+
+
        } catch (error) {
          return done(error);
        }
@@ -70,7 +70,7 @@ passport.use(new LocalStrategy({
 
 // Serialize  user
 passport.serializeUser((user: any, done) => {
-    done(null, user.id); 
+    done(null, user.id);
 });
 
 //deserialize user

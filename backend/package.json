@@ -6,8 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev src/server.ts",
     "test-connection": "ts-node src/test-connection.ts",
-    "generate": "drizzle-kit generate --config ./drizzle.config.ts",
-    "push": "drizzle-kit push:pg"
+    "generate": "drizzle-kit generate",
+    "push": "drizzle-kit push"
   },
   "keywords": [],
   "author": "",

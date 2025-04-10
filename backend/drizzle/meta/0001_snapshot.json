@@ -1,6 +1,6 @@
 {
-  "id": "07d39095-4401-42f5-a870-d478756647c0",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "48b87df6-e782-469a-b88d-2c4b63fec80e",
+  "prevId": "0556fe7c-e644-4c25-bfa0-86c051937855",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -17,7 +17,7 @@
         },
         "account_number": {
           "name": "account_number",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

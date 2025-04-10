@@ -1,4 +1,4 @@
-import { pgTable, text, date, boolean, timestamp, integer, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, date, boolean, timestamp, integer, varchar, bigint } from "drizzle-orm/pg-core";
 import { InferModel } from "drizzle-orm";
 import { sql } from 'drizzle-orm';
 

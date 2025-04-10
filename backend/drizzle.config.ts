@@ -7,8 +7,8 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default defineConfig({
-  schema: './src/util/schema.ts', // Path to your schema file
-  out: './drizzle/schema.ts', // Output directory for generated files
+  schema: './src/model/schema.ts', // Path to your schema file
+  out: './drizzle', // Output directory for generated files
   dialect: 'postgresql',
   verbose: true,
   strict: true,

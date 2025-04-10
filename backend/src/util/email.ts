@@ -8,13 +8,14 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
   service: "Gmail", 
   auth: {
-    user: process.env.EMAIL_USER || "userYourEmail", 
-    pass: process.env.EMAIL_PASS || "setUp 2factor and app password in gmail.", 
+    user: process.env.EMAIL_USER || "use your email", 
+    pass: process.env.EMAIL_PASS || "use 2factor and app password in gmail setting", 
+
   },
 });
 
 // Function to send an email
-export const sendEmail = async (to: string, link: string) => {
+export const sendActivationEmail = async (to: string, link: string) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
@@ -26,9 +27,27 @@ export const sendEmail = async (to: string, link: string) => {
     const info = await transporter.sendMail(mailOptions);
    
   } catch (error) {
-    console.error("Error sending email: ", error);
+    return `Error sending activation link email: ${error}`;
+  }
+};
+
+// Function to send a sign-in notification email
+export const sendSignInEmail = async ({ to, subject, text }: { to: string; subject: string; text: string }) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER || "use your email", 
+    to,
+    subject, 
+    text, 
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  
+  } catch (error) {
+  
+    return `Error sending sign-in email: ${error}`;
   }
 };
 
 
-module.exports = { sendEmail };
+module.exports = { sendActivationEmail, sendSignInEmail };

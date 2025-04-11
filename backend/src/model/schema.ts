@@ -28,6 +28,21 @@ export const accountDetails = pgTable("accountDetails", {
   created_at: timestamp("created_at").defaultNow(), 
 });
 
+// Add this to your existing schema
+export const passwordResetCodes = pgTable("password_reset_codes", {
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
+  user_id: text("user_id")
+      .notNull()
+      .references(() => users.id),
+  code: text("code").notNull(),
+  new_password_hash: text("new_password_hash").notNull(),
+  attempts: integer("attempts").notNull().default(0),
+  expires_at: timestamp("expires_at").notNull(),
+  created_at: timestamp("created_at").defaultNow(),
+});
+
+
+
 
 // Type Inference for Users
 export type User = InferModel<typeof users>;
@@ -37,3 +52,7 @@ export type NewUser = InferModel<typeof users, "insert">;
 // Type Inference for Account Details
 export type AccountDetail = InferModel<typeof accountDetails>;
 export type NewAccountDetail = InferModel<typeof accountDetails, "insert">;
+
+// Type inference for Password Reset Codes
+export type PasswordResetCode = InferModel<typeof passwordResetCodes>;
+export type NewPasswordResetCode = InferModel<typeof passwordResetCodes, "insert">;

@@ -1,22 +1,24 @@
 import express from 'express';
-import { getUserProfile, updateUserProfile, updateUserEmail, updateUserPassword } from '../controller/profileController';
+import { getUserProfile, updateUserAddress, updateUserEmail, initiatePasswordChange, completePasswordUpdate } from '../controller/profileController';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 
 const router = express.Router();
 
-// All profile routes require authentication
-router.use(isAuthenticated);
+router.use(isAuthenticated); // Apply the middleware to all routes
 
 // Get user profile
-router.get('/', isAuthenticated, getUserProfile);
+router.get('/', getUserProfile);
 
-// Update user profile details (name, address, nationality)
-router.put('/update', updateUserProfile);
+// Update user address
+router.put('/update-address', updateUserAddress);
 
-// Update user email (requires password verification)
+// Update user email
 router.put('/update-email', updateUserEmail);
 
-// Update user password (requires current password verification)
-router.put('/update-password', updateUserPassword);
+// Initiate password update
+router.post('/change-password/initiate', initiatePasswordChange);
+
+// Complete password update
+router.post('/change-password/complete', completePasswordUpdate);
 
 export default router;

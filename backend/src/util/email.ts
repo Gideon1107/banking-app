@@ -53,4 +53,22 @@ export const sendSignInEmail = async ({ to, subject, text }: { to: string; subje
 };
 
 
-module.exports = { sendActivationEmail, sendSignInEmail };
+// Function to send a update notification
+export const sendUpdateNotification = async ({ to, subject, html }: { to: string; subject: string; html: string }) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER || "use your email", 
+    to,
+    subject, 
+    html, 
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  
+  } catch (error) {
+  
+    return `Error sending notification email: ${error}`;
+  }
+};
+
+module.exports = { sendActivationEmail, sendSignInEmail, sendUpdateNotification };

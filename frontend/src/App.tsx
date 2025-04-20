@@ -1,10 +1,10 @@
-
+import React from 'react'
 
 function App() {
 
   return (
-    <div>
-      Banking App
+    <div className="flex flex-col h-screen">
+      <h2 className="underline text-3xl">Banking App</h2>
     </div>
   )
 }

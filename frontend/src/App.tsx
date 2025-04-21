@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import React from 'react'
 import LandingPage from './pages/LandingPage'
+=======
+
+
+>>>>>>> 78babbafe383bd316f0e3bd901b543bb22513136
 function App() {
 
   return (

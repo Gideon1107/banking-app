@@ -1,11 +1,8 @@
-// import * as React from 'react';
-// import { Routes, Route } from 'react-router-dom';
+import React from 'react'
 
 function RouterPath() {
   return (
-    <div>
-      
-    </div>
+    <div>RouterPath</div>
   )
 }
 

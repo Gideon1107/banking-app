@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Logo from '../assets/Logo.svg'
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,12 +13,13 @@ function Navbar() {
   ];
 
   return (
-    <nav className="bg-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
+    <nav className="bg-white ">
+      <div className="max-w-7xl mx-auto px-4 font-plus">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-xl font-bold text-blue-600">
-              BankApp
+            <img src={Logo} alt="PrimeVault Logo" className="h-8 w-auto" />
+            <Link to="/" className="text-[24px] font-bold ml-2 text-text">
+              PrimeVault
             </Link>
           </div>
 
@@ -27,12 +29,12 @@ function Navbar() {
               <Link
                 key={item.name}
                 to={item.path}
-                className="text-gray-700 hover:text-blue-600 transition-colors"
+                className="text-text text-[20px] font-semibold hover:text-blue-600 transition-colors"
               >
                 {item.name}
               </Link>
             ))}
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+            <button className="bg-white text-text px-4 py-1.5 rounded-xl font-semibold border-text border-2">
               Sign In
             </button>
           </div>
@@ -61,7 +63,7 @@ function Navbar() {
               <Link
                 key={item.name}
                 to={item.path}
-                className="block py-2 text-gray-700 hover:text-blue-600"
+                className="block py-2 text-text font-semibold hover:text-blue-600"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}

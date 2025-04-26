@@ -22,7 +22,7 @@ const PgSession = pgSession(session);
 // Setup session middleware
 app.use(session({
   store: new PgSession({
-    conString: process.env.DATABASE_URL || "postgresql://postgres.bszouzrifbnexmuukeex:bankdevwebsite12@aws-0-eu-west-2.pooler.supabase.com:6543/postgres", 
+    conString: process.env.DATABASE_URL || "postgresql://postgres:56RsirUPBtlNGKcZ@db.bszouzrifbnexmuukeex.supabase.co:5432/postgres", 
     tableName: 'session',
     createTableIfMissing: true,
   }),
@@ -39,6 +39,7 @@ app.use(session({
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 
 //routes

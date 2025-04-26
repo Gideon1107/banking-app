@@ -67,6 +67,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 
 
     return res.status(201).json({
+        newUser: newUser,
       message: 'User registered successfully. Please check your email to activate your account.'
     });
 

@@ -20,10 +20,12 @@ const updateAccountBalance = async (account_number: number, newBalance: number) 
 };
 
 const depositPayment = async (req: Request, res: Response): Promise<any> => {
-  const { account_number, account_type, amount, reference } = req.body;
+  const { account_number, transaction_type, amount, reference } = req.body;
 
+  const upperCaseTransactionType = transaction_type; 
+  console.log(upperCaseTransactionType)
   // Check if required fields are provided
-  if (!amount || !account_number) {
+  if (!amount || !account_number || !upperCaseTransactionType) {
     return res.status(400).json({ error: "Amount and account number are required." });
   }
 
@@ -40,7 +42,7 @@ const depositPayment = async (req: Request, res: Response): Promise<any> => {
 
     const updatedAccount = await updateAccountBalance(account_number, Number(existingAccount.account_balance) + parsedAmount);
 
-    const recordResult = await recordPayment(account_number, account_type.toUpperCase(), amount, undefined, reference);
+    const recordResult = await recordPayment(account_number,upperCaseTransactionType, amount, undefined, reference);
     if (!recordResult) {
       return res.status(500).json({ error: "Failed to record payment." });
     }
@@ -57,9 +59,10 @@ const depositPayment = async (req: Request, res: Response): Promise<any> => {
 };
 
 const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
-  const { account_number, account_type, amount } = req.body;
+  const { account_number, transaction_type, amount } = req.body;
 
-  if (!account_number || !amount || !account_type) {
+  const upperCaseTransactionType = transaction_type; 
+  if (!account_number || !amount || !upperCaseTransactionType) {
     return res.status(400).json({ error: "Account number, amount, and account type are required." });
   }
 
@@ -82,7 +85,7 @@ const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
     const updatedAccount = await updateAccountBalance(account_number, accountBalance - parsedAmount);
 
     const reference = 'Cash Withdraw';
-    const recordResult = await recordPayment(account_number, account_type.toUpperCase(), amount, undefined, reference);
+    const recordResult = await recordPayment(account_number, upperCaseTransactionType, amount, undefined, reference);
     if (!recordResult) {
       return res.status(500).json({ error: "Failed to record payment." });
     }
@@ -99,9 +102,11 @@ const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
 };
 
 const transferPayment = async (req: Request, res: Response): Promise<any> => {
-  const { account_number, account_type, amount, recipent_account, reference } = req.body;
+  const { account_number, transaction_type, amount, recipent_account, reference } = req.body;
 
-  if (!account_number || !amount || !recipent_account) {
+  const upperCaseTransactionType = transaction_type.toUpperCase(); 
+
+  if (!account_number || !amount || !recipent_account || !upperCaseTransactionType) {
     return res.status(400).json({ error: "Account number, amount, and recipient account are required." });
   }
 
@@ -132,7 +137,7 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
     const updatedRecipientAccount = await updateAccountBalance(recipent_account, Number(recipientAccount.account_balance) + parsedAmount);
 
     // Record the transactions
-    const recordSenderResult = await recordPayment(account_number, account_type.toUpperCase(), amount, recipent_account, reference);
+    const recordSenderResult = await recordPayment(account_number, upperCaseTransactionType, amount, recipent_account, reference);
     const recordRecipientResult = await recordPayment(recipent_account, "DEPOSIT", amount, account_number, "Deposit Transfer");
 
     if (!recordSenderResult || !recordRecipientResult) {

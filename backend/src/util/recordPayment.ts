@@ -23,7 +23,7 @@ export const recordPayment = (
     const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     try {
-      if (transaction_type === "DEPOSIT") {
+      if (transaction_type === "Deposit") {
         return db.insert(transactions).values({
           account_number,
           transaction_type,
@@ -33,7 +33,7 @@ export const recordPayment = (
           // transaction_date is defaulted in schema
         }).returning();
       }
-      else if (transaction_type === "WITHDRAWAL") {
+      else if (transaction_type === "Withdrawal") {
         return db.insert(transactions).values({
           account_number,
           transaction_type,
@@ -43,7 +43,7 @@ export const recordPayment = (
           transaction_date: formattedDate
         }).returning();
       }
-      else if (transaction_type === "TRANSFER") {
+      else if (transaction_type === "Transfer") {
         return db.insert(transactions).values({
           account_number,
           transaction_type,
@@ -53,7 +53,7 @@ export const recordPayment = (
           transaction_date: formattedDate
         }).returning();
       }
-      else if (transaction_type === "BILL TRANSFER") {
+      else if (transaction_type === "Bill Payment") {
         return db.insert(transactions).values({
           account_number,
           transaction_type,

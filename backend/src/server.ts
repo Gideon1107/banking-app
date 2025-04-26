@@ -7,8 +7,7 @@ import dotenv from "dotenv";
 import registerRouter from './route/register';
 import loginRouter from './route/login';
 import profileRouter from './route/profile';
-import { db } from './util/db';
-import { users } from './model/schema';
+import paymentRouter from './route/payment'
 
 dotenv.config();
 
@@ -45,7 +44,8 @@ app.use(passport.session());
 //routes
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
-app.use("/profile", profileRouter);
+app.use("/payment", paymentRouter);
+
 
 app.get("/", (req, res) => {
   res.send("Server is running...");

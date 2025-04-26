@@ -17,6 +17,9 @@ const depositPayment = async (req: Request, res: Response):Promise<any> => {
   if (isNaN(parsedAmount)) {
     return res.status(400).json({ error: "Invalid amount value." });
   }
+  if (parsedAmount <= 0) {
+    return res.status(400).json({ error: "Amount must be greater than zero." });
+  }
 
   try {
     // Check if the account number exists
@@ -34,9 +37,10 @@ const depositPayment = async (req: Request, res: Response):Promise<any> => {
 
     // Now TypeScript should know accountBalance is not null
     const updatedAccount = await db.update(accountDetails)
-      .set({ account_balance: String(Number(accountBalance) + parsedAmount) }) 
-      .where(eq(accountDetails.account_number, account_number))
-      .returning();
+    .set({ account_balance: (Number(accountBalance) + parsedAmount).toFixed(2) })
+    .where(eq(accountDetails.account_number, account_number))
+    .returning();
+  
 
     // Record the payment
     const recordResult = await recordPayment(account_number, "Deposit", amount, undefined, reference);
@@ -58,18 +62,62 @@ const depositPayment = async (req: Request, res: Response):Promise<any> => {
 
 const withdrawPayment = async(req: Request, res: Response):Promise<any> =>{
      const {account_number, amount} = req.body
-     
+   
      if( !account_number || !amount){
-       return 'fields requied'
+      return res.status(400).json({ error: "Account number and amount are required." });
      }
+     const parsedAmount = parseFloat(amount);
+     if (isNaN(parsedAmount)) {
+       return res.status(400).json({ error: "Invalid amount value." });
+     }
+     if (parsedAmount <= 0) {
+      return res.status(400).json({ error: "Amount must be greater than zero." });
+    }
+   
+     try {
+       // Check if the account number exists
+       const existingAccount = await db.select().from(accountDetails).where(eq(accountDetails.account_number, account_number));
+       
+       if (!existingAccount || existingAccount.length === 0) {
+         return res.status(404).json({ error: "Account not found." });
+       }
+   
+       // Explicitly check and handle null/undefined
+       const accountBalance = existingAccount[0]?.account_balance;
+       if (accountBalance === undefined || accountBalance === null) {
+         return res.status(500).json({ error: "Account balance is missing." });
+       }
+   
+       // Now TypeScript should know accountBalance is not null
+       const updatedAccount = await db.update(accountDetails)
+       .set({ account_balance: (Number(accountBalance) + parsedAmount).toFixed(2) }) 
+       .where(eq(accountDetails.account_number, account_number))
+       .returning();
      
 
-     try {
-               const existingAccount = await 
-
-
-           }
+        const reference = 'Cash Withdraw'
+   
+       // Record the payment
+       const recordResult = await recordPayment(account_number, "Withdraw", amount, undefined, reference );
+       if (!recordResult) {
+         return res.status(500).json({ error: "Failed to record payment." });
+       }
+   
+   
+       return res.status(200).json({
+         message: "Withdraw successful",
+         account: updatedAccount,
+         recordedPayment: recordResult
+       });
+     } catch (error) {
+       console.error("Error processing deposit:", error);
+       return res.status(500).json({ error: "Internal server error" });
+     }
     
     }
 
-export { depositPayment };
+const transferPayment = async (req:Request, res:Response):Promise<any> =>{
+      
+}
+
+export { depositPayment, withdrawPayment};

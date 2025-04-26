@@ -19,10 +19,11 @@ app.use(express.urlencoded({ extended: true }));
 // Setup connect-pg-simple
 const PgSession = pgSession(session);
 
+
 // Setup session middleware
 app.use(session({
   store: new PgSession({
-    conString: process.env.DATABASE_URL || "postgresql://postgres:56RsirUPBtlNGKcZ@db.bszouzrifbnexmuukeex.supabase.co:5432/postgres", 
+    conString: process.env.DATABASE_URL || "postgresql://postgres.bszouzrifbnexmuukeex:56RsirUPBtlNGKcZ@aws-0-eu-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true", 
     tableName: 'session',
     createTableIfMissing: true,
   }),

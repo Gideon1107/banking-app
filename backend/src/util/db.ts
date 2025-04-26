@@ -10,7 +10,7 @@ import "dotenv/config";
 
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || "postgresql://postgres:56RsirUPBtlNGKcZ@db.bszouzrifbnexmuukeex.supabase.co:5432/postgres",
+  connectionString: process.env.DATABASE_URL || "postgresql://postgres.bszouzrifbnexmuukeex:56RsirUPBtlNGKcZ@aws-0-eu-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true",
 });
 
 

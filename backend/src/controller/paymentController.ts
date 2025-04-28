@@ -1,13 +1,18 @@
 import { Request, Response } from 'express';
 import { db } from "../util/db";
-import { accountDetails, transactions } from "../model/schema";
+import { users, accountDetails, transactions } from "../model/schema";
 import { eq, desc } from 'drizzle-orm';
 import { recordPayment } from '../util/recordPayment';
+import {sendUpdateNotification} from '../util/email';
 
 // Helper function to get account by account number
 const getAccountByNumber = async (account_number: number) => {
   const account = await db.select().from(accountDetails).where(eq(accountDetails.account_number, account_number));
   return account.length > 0 ? account[0] : null;
+};
+const getDetailsByUserId = async (user_id: string) => {
+  const details = await db.select().from(users).where(eq(users.id, user_id));
+  return details.length > 0 ? details[0] : null;
 };
 
 // Helper function to update account balance
@@ -25,7 +30,7 @@ const depositPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount, reference } = req.body;
 
   const upperCaseTransactionType = transaction_type.trim().toLowerCase(); 
-  console.log(upperCaseTransactionType)
+
   // Check if required fields are provided
   if (!amount || !account_number || !upperCaseTransactionType) {
     return res.status(400).json({ error: "Amount and account number are required." });
@@ -42,13 +47,27 @@ const depositPayment = async (req: Request, res: Response): Promise<any> => {
       return res.status(404).json({ error: "Account not found." });
     }
 
+    const userInfo = await getDetailsByUserId(existingAccount.user_id)
+    console.log(userInfo)
+    if(!userInfo){
+      return res.status(500).json({error: "failed to get user Info"})
+    }
     const updatedAccount = await updateAccountBalance(account_number, Number(existingAccount.account_balance) + parsedAmount);
+    if(!updatedAccount){
+      return res.status(500).json({error: "failed to update payment"})
+    }
 
     const recordResult = await recordPayment(account_number,upperCaseTransactionType, amount, undefined, reference);
     if (!recordResult) {
       return res.status(500).json({ error: "Failed to record payment." });
     }
 
+    await  sendUpdateNotification({
+                    to: userInfo.email,
+                    subject: 'New Depsoit',
+                    html: `<p>Hello ${userInfo.firstname},</p><p> An amount of $${amount} has been deposited in your account.</p><p>Click to Sign-In.</p>`,
+                });
+    
     return res.status(200).json({
       message: "Deposit successful",
       account: updatedAccount,
@@ -83,14 +102,27 @@ const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
     if (parsedAmount > accountBalance) {
       return res.status(400).json({ error: "Insufficient funds." });
     }
-
+    const userInfo = await getDetailsByUserId(existingAccount.user_id)
+    console.log(userInfo)
+    if(!userInfo){
+      return res.status(500).json({error: "failed to get user Info"})
+    }
     const updatedAccount = await updateAccountBalance(account_number, accountBalance - parsedAmount);
-
+    if(!updatedAccount){
+      return res.status(500).json({error: "failed to update payment"})
+    }
     const reference = 'Cash Withdraw';
     const recordResult = await recordPayment(account_number, upperCaseTransactionType, amount, undefined, reference);
     if (!recordResult) {
       return res.status(500).json({ error: "Failed to record payment." });
     }
+
+
+    await  sendUpdateNotification({
+      to: userInfo.email,
+      subject: 'New Withdraw',
+      html: `<p>Hello ${userInfo.firstname},</p><p> An amount of $${amount} has been Withdrawn from your account.</p><p>Click to Sign-In.</p>`,
+  });
 
     return res.status(200).json({
       message: "Withdrawal successful",
@@ -130,14 +162,26 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
     }
 
     const senderBalance = Number(senderAccount.account_balance);
+ 
     if (parsedAmount > senderBalance) {
       return res.status(400).json({ error: "Insufficient funds in sender's account." });
     }
 
+    const senderInfo = await getDetailsByUserId(senderAccount.user_id)
+    const recipientInfo = await getDetailsByUserId(recipientAccount.user_id)
+    if (!senderInfo) {
+      return res.status(404).json({ error: "Sender user details not found." });
+    }
+    if (!recipientInfo) {
+      return res.status(404).json({ error: "Recipient user details not found." });
+    }
     // Update both sender and recipient balances
     const updatedSenderAccount = await updateAccountBalance(account_number, senderBalance - parsedAmount);
+    
     const updatedRecipientAccount = await updateAccountBalance(recipent_account, Number(recipientAccount.account_balance) + parsedAmount);
-
+    if(!updatedSenderAccount && !updatedRecipientAccount){
+      return res.status(500).json({error: "failed to update payment"})
+    }
     // Record the transactions
     const recordSenderResult = await recordPayment(account_number, upperCaseTransactionType, amount, recipent_account, reference);
     const recordRecipientResult = await recordPayment(recipent_account, "deposit", amount, account_number, "Deposit Transfer");
@@ -146,6 +190,16 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
       return res.status(500).json({ error: "Failed to record transaction." });
     }
 
+    await  sendUpdateNotification({
+      to: senderInfo.email,
+      subject: 'New Transfer',
+      html: `<p>Hello ${senderInfo.firstname},</p><p> You transferred  $${amount} to this account number ${ recipent_account}.</p><p>Click to Sign-In.</p>`,
+  });
+  await  sendUpdateNotification({
+    to: recipientInfo.email,
+    subject: 'New Depsoit',
+    html: `<p>Hello ${recipientInfo.firstname},</p><p> You recieved  $${amount} from account number ${account_number}.</p><p>Click to Sign-In.</p>`,
+});
     return res.status(200).json({
       message: "Transfer successful",
       senderAccount: updatedSenderAccount,

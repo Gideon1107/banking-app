@@ -5,17 +5,21 @@ import { eq, desc } from 'drizzle-orm';
 import { recordPayment } from '../util/recordPayment';
 import {sendUpdateNotification} from '../util/email';
 
-// Helper function to get account by account number
+// function to get account details by account number
 const getAccountByNumber = async (account_number: number) => {
   const account = await db.select().from(accountDetails).where(eq(accountDetails.account_number, account_number));
   return account.length > 0 ? account[0] : null;
 };
+
+// function to get userinfo by userid
 const getDetailsByUserId = async (user_id: string) => {
   const details = await db.select().from(users).where(eq(users.id, user_id));
   return details.length > 0 ? details[0] : null;
 };
 
-// Helper function to update account balance
+
+
+// function to update account balance
 const updateAccountBalance = async (account_number: number, newBalance: number) => {
   const updatedAccount = await db.update(accountDetails)
     .set({ account_balance: newBalance.toFixed(2) })
@@ -25,7 +29,7 @@ const updateAccountBalance = async (account_number: number, newBalance: number) 
 };
 
 
-
+// deposit 
 const depositPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount, reference } = req.body;
 
@@ -79,6 +83,7 @@ const depositPayment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+//withdraw
 const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount } = req.body;
 
@@ -135,6 +140,7 @@ const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+//transfer
 const transferPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount, recipent_account, reference } = req.body;
 
@@ -211,6 +217,7 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+//get transaction history
 const getTransactionHistory = async (req: Request, res: Response): Promise<any> => {
   const { account_number } = req.params; 
 

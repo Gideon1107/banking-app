@@ -12,13 +12,13 @@ export const recordPayment = (
       throw new Error("Account number, transaction type, and amount are required.");
     }
     
-    // Validation only
+    // Validate the amount
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount)) {
       throw new Error("Invalid amount value.");
     }
     
-    // Format date as YYYY-MM-DD for Drizzle's date field
+    // Format date as YYYY-MM-DD 
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD format
     
@@ -30,7 +30,7 @@ export const recordPayment = (
           amount,
           recipient_account,
           reference,
-          // transaction_date is defaulted in schema
+    
         }).returning();
       }
       else if (transaction_type === "withdrawal") {

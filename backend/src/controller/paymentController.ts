@@ -1,38 +1,17 @@
 import { Request, Response } from 'express';
 import { db } from "../util/db";
-import { users, accountDetails, transactions } from "../model/schema";
+import { accountDetails, transactions} from "../model/schema";
 import { eq, desc } from 'drizzle-orm';
 import { recordPayment } from '../util/recordPayment';
 import {sendUpdateNotification} from '../util/email';
-
-// function to get account details by account number
-const getAccountByNumber = async (account_number: number) => {
-  const account = await db.select().from(accountDetails).where(eq(accountDetails.account_number, account_number));
-  return account.length > 0 ? account[0] : null;
-};
-
-// function to get userinfo by userid
-const getDetailsByUserId = async (user_id: string) => {
-  const details = await db.select().from(users).where(eq(users.id, user_id));
-  return details.length > 0 ? details[0] : null;
-};
+import { getAccountByNumber, getDetailsByUserId, updateAccountBalance } from '../util/helperFunction';
 
 
 
-// function to update account balance
-const updateAccountBalance = async (account_number: number, newBalance: number) => {
-  const updatedAccount = await db.update(accountDetails)
-    .set({ account_balance: newBalance.toFixed(2) })
-    .where(eq(accountDetails.account_number, account_number))
-    .returning();
-  return updatedAccount;
-};
-
-
-// deposit 
+// Deposit payment
 const depositPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount, reference } = req.body;
-
+   console.log(req.body)
   const upperCaseTransactionType = transaction_type.trim().toLowerCase(); 
 
   // Check if required fields are provided
@@ -52,7 +31,7 @@ const depositPayment = async (req: Request, res: Response): Promise<any> => {
     }
 
     const userInfo = await getDetailsByUserId(existingAccount.user_id)
-    console.log(userInfo)
+   
     if(!userInfo){
       return res.status(500).json({error: "failed to get user Info"})
     }
@@ -83,7 +62,7 @@ const depositPayment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-//withdraw
+//Withdraw Payment
 const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount } = req.body;
 
@@ -140,7 +119,7 @@ const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-//transfer
+//Transfer
 const transferPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount, recipent_account, reference } = req.body;
 
@@ -158,6 +137,7 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
   try {
     const senderAccount = await getAccountByNumber(account_number);
     const recipientAccount = await getAccountByNumber(recipent_account);
+    
 
     if (!senderAccount) {
       return res.status(404).json({ error: "Sender account not found." });
@@ -217,7 +197,7 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-//get transaction history
+//Get transaction history
 const getTransactionHistory = async (req: Request, res: Response): Promise<any> => {
   const { account_number } = req.params; 
 
@@ -254,7 +234,68 @@ const getTransactionHistory = async (req: Request, res: Response): Promise<any> 
   }
 };
 
+// Pay Bills
+const payBills = async (req: Request, res: Response): Promise<any> => {
+    const { account_number, amount, transaction_type, biller_name, reference } = req.body;
+   
+
+
+  const upperCaseTransactionType = transaction_type.trim().toLowerCase(); 
+    if (!account_number || !amount || !biller_name) {
+        return res.status(400).json({ error: "Account number, amount, and biller name are required." });
+    }
+
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        return res.status(400).json({ error: "Invalid amount value." });
+    }
+
+    try {
+        const account = await db.select().from(accountDetails).where(eq(accountDetails.account_number, account_number));
+
+        if (!account[0]) {
+            return res.status(404).json({ error: "Account not found." });
+        }
+        const userInfo = await getDetailsByUserId(account[0].user_id)
+  
+       if(!userInfo){
+           return res.status(500).json({error: "failed to get user Info"})
+        }
+
+        const accountBalance = Number(account[0].account_balance);
+        if (parsedAmount > accountBalance) {
+            return res.status(400).json({ error: "Insufficient funds." });
+        }
+
+        // Deduct from account balance
+       const updatedAccount = await db.update(accountDetails)
+            .set({ account_balance: (accountBalance - parsedAmount).toFixed(2) })
+            .where(eq(accountDetails.account_number, account_number))
+            .returning();
+
+      const recordResult = await recordPayment(account_number,upperCaseTransactionType, amount, undefined, reference || `Payment to ${biller_name}`);
+      if (!recordResult) {
+        return res.status(500).json({ error: "Failed to record payment." });
+      }
+  
+      await  sendUpdateNotification({
+                      to: userInfo.email,
+                      subject: 'New Depsoit',
+                      html: `<p>Hello ${userInfo.firstname},</p><p> An amount of $${amount} has been deducted in your account and billed to ${biller_name}.</p><p>Click to Sign-In.</p>`,
+                  });
+      
+      return res.status(200).json({
+        message: "Bill payment successful",
+        account: updatedAccount,
+        recordedPayment: recordResult
+      });
+       
+    } catch (error) {
+        console.error("Error processing bill payment:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 
 
-export { depositPayment, withdrawPayment, transferPayment, getTransactionHistory };
+export { depositPayment, withdrawPayment, transferPayment, getTransactionHistory, payBills};

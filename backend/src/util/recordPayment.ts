@@ -62,7 +62,27 @@ export const recordPayment = (
           reference,
           transaction_date: formattedDate
         }).returning();
-      } else {
+      } else if (transaction_type === "card deposit") {
+        return db.insert(transactions).values({
+          account_number,
+          transaction_type: "Debit Card Deposit",
+          amount,
+          recipient_account,
+          reference,
+          transaction_date: formattedDate
+        }).returning();
+      }
+      else if (transaction_type === "card withdrawal") {
+        return db.insert(transactions).values({
+          account_number,
+          transaction_type: "Debit Card Withdrawal",
+          amount,
+          recipient_account,
+          reference,
+          transaction_date: formattedDate
+        }).returning();
+      }
+       else {
         throw new Error("Invalid transaction type.");
       }
     } catch (error) {

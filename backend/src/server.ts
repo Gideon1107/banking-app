@@ -8,6 +8,9 @@ import registerRouter from './route/register';
 import loginRouter from './route/login';
 import profileRouter from './route/profile';
 import paymentRouter from './route/payment'
+import cardRouter from './route/card'
+import beneficiaryRouter from './route/beneficiary'
+import { db } from "./util/db";
 
 dotenv.config();
 
@@ -37,6 +40,7 @@ app.use(session({
   },
 }));
 
+
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
@@ -47,6 +51,9 @@ app.use(passport.session());
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/payment", paymentRouter);
+app.use("/profile", profileRouter);
+app.use("/card", cardRouter);
+app.use("/beneficiary", beneficiaryRouter);
 
 
 app.get("/", (req, res) => {

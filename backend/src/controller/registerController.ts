@@ -5,12 +5,12 @@ import { db } from "../util/db";
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { users, accountDetails } from "../model/schema";
-import { generateAccountNumber } from '../util/generateAcct';
+import { generateAccountNumber,generateCvv, generateDebitCardNumber } from '../util/generate';
 
 
 // Register new user
 export const register = async (req: Request, res: Response): Promise<any> => {
-
+   console.log(req.body)
     //Generate JWT secret
     const JWT_SECRET = process.env.JWT_SECRET || 'gfdhvbdfye3uwt352gwebstw2y282shddte3heydwbh3ydehnen';
 
@@ -73,7 +73,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 
 
   } catch (error) {
-
+    console.error("Registration error details:", error); 
         return res.status(500).json({ error: 'Internal server error during registration.' });
     }
 }
@@ -122,8 +122,7 @@ export const activateAccount = async (req: Request, res: Response): Promise<any>
 // Create account information
 export const createAccountInfo = async (req: Request, res: Response): Promise<any> => {
     const { account_type, user_id } = req.body;
-
-
+  
     if (!account_type && !user_id) {
         return res.status(400).json({ error: "Account type and user ID are required." });
     }
@@ -150,17 +149,29 @@ export const createAccountInfo = async (req: Request, res: Response): Promise<an
         }
         //Generate a unique account number
         const account_number = await generateAccountNumber();
+        const debitCard_number = await generateDebitCardNumber();
 
 
         if (!account_number) {
             return res.status(404).json({ error: "Unable to generate account number" });
         }
 
+        if(!debitCard_number){
+            return res.status(404).json({ error: "Unable to generate debit card number" });
+        }
+
+        const cvv = await generateCvv();
+        if (!cvv) {
+            return res.status(404).json({ error: "Unable to generate CVV" });
+        }
         //Insert account details into the database
         const response = await db.insert(accountDetails).values({
             account_number,
             account_type: account_Type,
-            user_id: user_id
+            user_id: user_id,
+            debit_number: debitCard_number,
+            cvv: cvv,
+            card_pin: '1234', // Default PIN, should be changed by the user      
         }).returning();
 
 

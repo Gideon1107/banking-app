@@ -1,6 +1,6 @@
 import express from 'express';
 import { isAuthenticated } from '../middleware/isAuthenticated';
-import {depositPayment,  withdrawPayment, transferPayment, getTransactionHistory} from '../controller/paymentController';
+import {depositPayment,  withdrawPayment, transferPayment, getTransactionHistory, payBills} from '../controller/paymentController';
 const router = express.Router();
 
 router.use(isAuthenticated);
@@ -19,6 +19,12 @@ router.post("/transfer", transferPayment);
 
 //Get Transaction History
 router.get("/:account_number", getTransactionHistory);
+
+//Pay Bills
+router.post("/bills", payBills);
+
+
+
 
 
 export default router;

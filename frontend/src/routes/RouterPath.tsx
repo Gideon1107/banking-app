@@ -14,6 +14,9 @@ import AddCard from '../pages/dashboard/AddCard'
 import ChangePin from '../components/Dashboard/ChangePin'
 import Details from '../components/payments/Details'
 import Bills from '../components/payments/Bills'
+import Electric from '../components/payments/Electric'
+import Water from '../components/payments/Water'
+import Internet from '../components/payments/Internet'
 
 function RouterPath() {
   return (
@@ -32,6 +35,10 @@ function RouterPath() {
             <Route index element={<Payments />} />
             <Route path="details" element={<Details />} />
             <Route path="bills" element={<Bills />} />
+            <Route path="electric" element={<Electric />} />
+            <Route path="water" element={<Water />} />
+            <Route path="internet" element={<Internet />} />
+
           </Route>
 
           <Route path="cards" >

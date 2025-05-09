@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import wallet from "../../assets/wallet.png";
 import mobile from "../../assets/mobile.png";
 import receipt from "../../assets/receipt.png";
@@ -7,13 +8,15 @@ import transfer from "../../assets/transfer.png";
 import credit from "../../assets/credit.png";
 
 function Service() {
+  const navigate = useNavigate();
+
   const services = [
-    { icon: wallet, title: "Account and Card" },
-    { icon: transfer, title: "Transfer" },
-    { icon: withdraw, title: "Withdraw" },
-    { icon: mobile, title: "Mobile Recharge" },
-    { icon: receipt, title: "Pay the bills" },
-    { icon: credit, title: "Credit Card" },
+    { icon: wallet, title: "Account and Card", path: "/dashboard/profile" },
+    { icon: transfer, title: "Transfer", path: "/dashboard/payments" },
+    { icon: withdraw, title: "Withdraw", path: "/dashboard/payments/withdraw" },
+    { icon: mobile, title: "Mobile Recharge", path: "/dashboard/payments/recharge" },
+    { icon: receipt, title: "Pay the bills", path: "/dashboard/payments/bills" },
+    { icon: credit, title: "Credit Card", path: "/dashboard/payments/credit" },
   ];
 
   return (
@@ -21,6 +24,7 @@ function Service() {
       {services.map((service, index) => (
         <div
           key={index}
+          onClick={() => navigate(service.path)}
           className="flex flex-col items-center p-4 bg-white rounded-xl hover:shadow-lg transition-all cursor-pointer"
         >
           <div className="bg-gray-50 p-3 rounded-lg mb-2">

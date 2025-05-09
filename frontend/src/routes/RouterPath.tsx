@@ -10,9 +10,10 @@ import Cards from '../pages/dashboard/Cards'
 import Loan from '../pages/dashboard/Loan'
 import Live from '../pages/dashboard/Live'
 import Profile from '../pages/dashboard/Profile'
-
-
-
+import AddCard from '../pages/dashboard/AddCard'
+import ChangePin from '../components/Dashboard/ChangePin'
+import Details from '../components/payments/Details'
+import Bills from '../components/payments/Bills'
 
 function RouterPath() {
   return (
@@ -25,11 +26,23 @@ function RouterPath() {
         {/* Dashboard Routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Home />} />
-          <Route path="payments" element={<Payments />} />
-          <Route path="cards" element={<Cards />} />
-          <Route path="loan" element={<Loan/>} />
-          <Route path="live chat" element={<Live />} />
-          <Route path="profile" element={<Profile/>} />
+          <Route path="home" element={<Home />} />
+          {/* Nested Routes for Payments */}
+          <Route path="payments">
+            <Route index element={<Payments />} />
+            <Route path="details" element={<Details />} />
+            <Route path="bills" element={<Bills />} />
+          </Route>
+
+          <Route path="cards" >
+            <Route index element={<Cards />} />
+            <Route path="add" element={<AddCard />} />
+            <Route path="change" element={<ChangePin />} />
+          </Route>
+
+          <Route path="loan" element={<Loan />} />
+          <Route path="live-chat" element={<Live />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

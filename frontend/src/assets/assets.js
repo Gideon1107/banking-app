@@ -8,6 +8,11 @@ import transfer from './transfer.png';
 import wallet from './wallet.png';
 import withraw from './withdraw.png';
 import credit from './credit-card.png';
+import frame from './Frame.png';
+import girl from './girl.jpg' ;
+import electric from './electric.png';
+import water from './water.png';
+import internet from './internet.png'
 
 export  const assets ={
     logo,
@@ -19,5 +24,10 @@ export  const assets ={
     transfer,
     wallet,
     withraw,
-    credit
+    credit,
+    frame,
+    girl,
+    electric,
+    water,
+    internet
 }

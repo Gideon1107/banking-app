@@ -168,7 +168,7 @@ function Signup() {
               onChange={(e) =>
                 setFormData({ ...formData, address: e.target.value })
               }
-              rows={2}
+              rows={2 }
             />
           </div>
 

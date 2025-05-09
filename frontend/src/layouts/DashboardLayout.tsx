@@ -3,12 +3,19 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Dashboard/Sidebar';
 
 const DashboardLayout = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="ml-64 p-8 w-full">
+    <div className="flex min-h-screen">
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <main className={`
+        flex-1 
+        transition-all duration-300 
+        lg:ml-56
+        p-4 lg:p-8
+      `}>
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

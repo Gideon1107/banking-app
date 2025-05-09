@@ -1,16 +1,25 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/logo2.svg";
-import { RiHomeLine, RiWalletLine,  RiMoneyDollarCircleLine, RiCustomerService2Line, RiUserLine } from 'react-icons/ri';
+import { RiHomeLine, RiWalletLine, RiMoneyDollarCircleLine, RiCustomerService2Line, RiUserLine } from 'react-icons/ri';
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface SidebarProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <>
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle Button - Moved to bottom */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-20 p-2 rounded-md bg-gray-800 text-white"
+        className="lg:hidden fixed bottom-4 left-4 z-20 p-3 rounded-full bg-blue-500 text-white shadow-lg hover:bg-blue-600 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
         <svg
@@ -41,16 +50,16 @@ const Sidebar = () => {
       <div
         className={`
         fixed top-0 left-0 z-10
-        lg:translate-x-0 fobnt-plus
+        lg:translate-x-0
         transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         bg-bg text-white h-screen w-56 p-4
       `}
       >
-        <div className="text-xl font-bold mb-8 mt-16 lg:mt-0">
-          <div className="flex items-center">
-            <img src={Logo} alt="PrimeVault Logo" className="h-8 w-auto" />
-            <Link to="/" className="text-[24px] font-bold text-white ml-2 ">
+        <div className="text-xl font-bold mb-8 mt-16 lg:mt-4">
+          <div className="flex flex-col items-center">
+            <img src={Logo} alt="PrimeVault Logo" className="h-8 w-auto mr-6" />
+            <Link to="/" className="text-[18px]  text-white mr-6 ">
               PrimeVault
             </Link>
           </div>
@@ -60,7 +69,11 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/dashboard"
-                className="flex items-center font-semibold hover:bg-white hover:rounded-2xl hover:text-blue-500 p-2 rounded"
+                className={`flex items-center font-semibold p-2 rounded-4xl transition-all duration-300 ${
+                  isActive('/dashboard')
+                    ? 'bg-white text-blue-500'
+                    : 'hover:bg-white hover:text-blue-500'
+                }`}
               >
                 <RiHomeLine className="mr-3 text-xl" />
                 Home
@@ -69,7 +82,11 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/dashboard/payments"
-                className="flex items-center font-semibold hover:bg-white hover:rounded-2xl hover:text-blue-500 p-2 rounded"
+                className={`flex items-center font-semibold p-2 rounded-4xl transition-all duration-300 ${
+                  isActive('/dashboard/payments')
+                    ? 'bg-white text-blue-500'
+                    : 'hover:bg-white hover:text-blue-500'
+                }`}
               >
                 <RiWalletLine className="mr-3 text-xl" />
                 Payments
@@ -78,7 +95,11 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/dashboard/cards"
-                className="flex items-center font-semibold hover:bg-white hover:rounded-2xl hover:text-blue-500 p-2 rounded"
+                className={`flex items-center font-semibold p-2 rounded-4xl transition-all duration-300 ${
+                  isActive('/dashboard/cards')
+                    ? 'bg-white text-blue-500'
+                    : 'hover:bg-white hover:text-blue-500'
+                }`}
               >
                 <RiWalletLine className="mr-3 text-xl" />
                 Card
@@ -87,7 +108,11 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/dashboard/loan"
-                className="flex items-center font-semibold hover:bg-white hover:rounded-2xl hover:text-blue-500 p-2 rounded"
+                className={`flex items-center font-semibold p-2 rounded-4xl transition-all duration-300 ${
+                  isActive('/dashboard/loan')
+                    ? 'bg-white text-blue-500'
+                    : 'hover:bg-white hover:text-blue-500'
+                }`}
               >
                 <RiMoneyDollarCircleLine className="mr-3 text-xl" />
                 Loan
@@ -96,7 +121,11 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/dashboard/live chat"
-                className="flex items-center font-semibold hover:rounded-2xl hover:bg-white hover:text-blue-500 p-2 rounded"
+                className={`flex items-center font-semibold p-2 rounded-4xl transition-all duration-300 ${
+                  isActive('/dashboard/live chat')
+                    ? 'bg-white text-blue-500'
+                    : 'hover:bg-white hover:text-blue-500'
+                }`}
               >
                 <RiCustomerService2Line className="mr-3 text-xl" />
                 Live chat
@@ -105,7 +134,11 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/dashboard/profile"
-                className="flex items-center font-semibold hover:rounded-2xl hover:bg-white hover:text-blue-500 p-2 rounded"
+                className={`flex items-center font-semibold p-2 rounded-4xl transition-all duration-300 ${
+                  isActive('/dashboard/profile')
+                    ? 'bg-white text-blue-500'
+                    : 'hover:bg-white hover:text-blue-500'
+                }`}
               >
                 <RiUserLine className="mr-3 text-xl" />
                 Profile

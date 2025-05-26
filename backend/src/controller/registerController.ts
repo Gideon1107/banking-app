@@ -10,7 +10,7 @@ import { generateAccountNumber,generateCvv, generateDebitCardNumber } from '../u
 
 // Register new user
 export const register = async (req: Request, res: Response): Promise<any> => {
-   console.log(req.body)
+ 
     //Generate JWT secret
     const JWT_SECRET = process.env.JWT_SECRET || 'gfdhvbdfye3uwt352gwebstw2y282shddte3heydwbh3ydehnen';
 

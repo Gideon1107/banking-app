@@ -5,6 +5,7 @@ import "react-phone-input-2/lib/style.css";
 import { FaLock, FaEye, FaEyeSlash, FaQuestionCircle } from "react-icons/fa";
 import CountryPicker from "../../components/CountryPicker";
 import { HiArrowRight } from "react-icons/hi";
+import SuccessPopup from "../../components/common/SuccessPopup";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -14,16 +15,18 @@ function Signup() {
     nationality: "",
     phone: "",
     password: "",
-    pin: "",
+    // pin: "",
     address: "",
-    securityQuestion: "",
+    // securityQuestion: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showPin, setShowPin] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Add signup logic here
+    setShowSuccessPopup(true);
   };
 
   return (
@@ -129,7 +132,7 @@ function Signup() {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-black mb-1">
               Create PIN (4 digits)
             </label>
@@ -156,7 +159,7 @@ function Signup() {
                 {showPin ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-sm font-medium text-black mb-1">
@@ -168,11 +171,11 @@ function Signup() {
               onChange={(e) =>
                 setFormData({ ...formData, address: e.target.value })
               }
-              rows={2 }
+              rows={2}
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-black mb-1">
               Security Question
             </label>
@@ -185,7 +188,7 @@ function Signup() {
               }
               placeholder="What was your nickname?"
             />
-          </div>
+          </div> */}
           <div className="flex justify-center">
             <button
               type="submit"
@@ -207,6 +210,11 @@ function Signup() {
           </Link>
         </p>
       </div>
+      <SuccessPopup
+        isOpen={showSuccessPopup}
+        onClose={() => setShowSuccessPopup(false)}
+        message="Please check your email for an activation link to complete your registration."
+      />
     </div>
   );
 }

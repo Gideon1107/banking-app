@@ -21,10 +21,12 @@ function LandingPage() {
             personalized financial tools, and clear, easy-to-understand reports.
             Take control of your financial future, today.
           </p>
-          <button className="mt-6 md:mt-8 px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-text to-[#00388C] text-white rounded-4xl font-bold flex items-center gap-2 md:gap-4 hover:scale-105 transition-transform">
-            Get Started
-            <HiArrowRight className="w-5 h-5" />
-          </button>
+          <Link to='/login'>
+            <button className="mt-6 md:mt-8  cursor-pointer px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-text to-[#00388C] text-white rounded-4xl font-bold flex items-center gap-2 md:gap-4 hover:scale-105 transition-transform">
+              Get Started
+              <HiArrowRight className="w-5 h-5" />
+            </button>
+          </Link>
         </div>
         <div className="w-full md:w-auto flex justify-center">
           <img src={card} alt="" className="w-3/4 md:w-250 h-auto" />
@@ -49,10 +51,12 @@ function LandingPage() {
           </p>
         </div>
         <div className="w-full md:w-1/3">
-          <button className="mt-4 md:mt-8 px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-text to-[#00388C] text-white rounded-4xl font-bold flex items-center gap-2 md:gap-4 hover:scale-105 transition-transform">
-            Get Started
-            <HiArrowRight className="w-5 h-5" />
-          </button>
+          <Link to="/login">
+            <button className="mt-4 md:mt-8 px-4 cursor-pointer md:px-6 py-2 md:py-3 bg-gradient-to-r from-text to-[#00388C] text-white rounded-4xl font-bold flex items-center gap-2 md:gap-4 hover:scale-105 transition-transform">
+              Get Started
+              <HiArrowRight className="w-5 h-5" />
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -80,7 +84,7 @@ function LandingPage() {
             Adapt your banking to your needs.Switch account types for benefits.Personalized features and growth opportunities, all in one place.
           </p>
           <Link to="/login">
-            <button className="w-full mt-6 text-text text-center justify-center md:mt-8 px-4 py-2 lg:py-3 rounded-4xl border-text border-2 font-bold flex items-center gap-2 md:gap-4 hover:scale-105 transition-transform">
+            <button className="w-full mt-6 cursor-pointer text-text text-center justify-center md:mt-8 px-4 py-2 lg:py-3 rounded-4xl border-text border-2 font-bold flex items-center gap-2 md:gap-4 hover:scale-105 transition-transform">
               Sign in
               <HiArrowRight className="w-5 h-5" />
             </button>

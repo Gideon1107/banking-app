@@ -22,7 +22,7 @@ const Payments = () => {
 
   return (
     <div>
-      <h1 className="text-2xl text-center font-bold text-text">Transfer to Bank</h1>
+      <h1 className="text-2xl text-center font-plus font-bold text-text">Transfer to Bank</h1>
       <div className='flex-col flex font-plus space-y-6 bg-bal p-8 mt-6 max-w-2xl mx-auto rounded-2xl'>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

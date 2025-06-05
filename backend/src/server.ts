@@ -3,6 +3,7 @@ import session from 'express-session';
 import passport from 'passport';
 import pgSession from "connect-pg-simple";
 import './config/passport';
+import cors from 'cors';
 import dotenv from "dotenv";
 import registerRouter from './route/register';
 import loginRouter from './route/login';
@@ -38,6 +39,11 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
   },
+}));
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Your frontend port
+  credentials: true,
 }));
 
 

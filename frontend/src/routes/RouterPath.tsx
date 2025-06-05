@@ -17,6 +17,7 @@ import Bills from '../components/payments/Bills'
 import Electric from '../components/payments/Electric'
 import Water from '../components/payments/Water'
 import Internet from '../components/payments/Internet'
+import Account_Type from '../pages/Account_Type'
 
 function RouterPath() {
   return (
@@ -25,7 +26,8 @@ function RouterPath() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        
+        <Route path="/account_type" element={<Account_Type />} />
+     
         {/* Dashboard Routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Home />} />

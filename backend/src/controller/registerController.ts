@@ -90,10 +90,10 @@ export const activateAccount = async (req: Request, res: Response): Promise<any>
     }
 
     try {
-        // Verify the token
-        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'your-default-secret');
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'gfdhvbdfye3uwt352gwebstw2y282shddte3heydwbh3ydehnen');
 
         const checkUser = await db.select().from(users).where(eq(users.email, decoded.email));
+        console.log("Decoded email:", decoded.email);
 
         if (!checkUser[0]) {
             return res.status(404).send(`
@@ -107,12 +107,10 @@ export const activateAccount = async (req: Request, res: Response): Promise<any>
             .set({ isactive: true })
             .where(eq(users.email, decoded.email));
 
-        // Success HTML popup with redirect
         return res.status(200).send(`
             <html>
               <head>
                 <title>Account Activated</title>
-                <meta http-equiv="refresh" content="4; URL=/account-type?userId=${userId}" />
                 <style>
                   body {
                     font-family: 'Segoe UI', sans-serif;
@@ -144,6 +142,11 @@ export const activateAccount = async (req: Request, res: Response): Promise<any>
                   <h2>🎉 Account Verified!</h2>
                   <p>Redirecting you to set up your account type...</p>
                 </div>
+                <script>
+                  setTimeout(() => {
+                    window.location.href = "http://localhost:5173/account_type?userId=${userId}";
+                  }, 3000);
+                </script>
               </body>
             </html>
         `);
@@ -154,6 +157,7 @@ export const activateAccount = async (req: Request, res: Response): Promise<any>
         `);
     }
 };
+
 
 
 

@@ -81,40 +81,80 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 
 //Activate user account
 export const activateAccount = async (req: Request, res: Response): Promise<any> => {
-
     const { token } = req.params;
 
     if (!token) {
-        return res.status(400).json({ error: "Token is required" });
+        return res.status(400).send(`
+            <h3 style="color: red; text-align: center;">Token is missing</h3>
+        `);
     }
 
     try {
         // Verify the token
-        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'gfdhvbdfye3uwt352gwebstw2y282shddte3heydwbh3ydehnen');
-
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'your-default-secret');
 
         const checkUser = await db.select().from(users).where(eq(users.email, decoded.email));
 
         if (!checkUser[0]) {
-            return res.status(404).json({ error: "Invalid activation link." });
+            return res.status(404).send(`
+                <h3 style="color: red; text-align: center;">Invalid activation link.</h3>
+            `);
         }
 
         const userId = checkUser[0].id;
 
-        // Update the user's isactive status
-        const response = await db.update(users)
+        await db.update(users)
             .set({ isactive: true })
             .where(eq(users.email, decoded.email));
-        if (!response) {
-            return res.status(404).json({ error: "unable to update " });
-        }
 
-        return res.status(200).json({ message: "Account activated successfully.", userId });
+        // Success HTML popup with redirect
+        return res.status(200).send(`
+            <html>
+              <head>
+                <title>Account Activated</title>
+                <meta http-equiv="refresh" content="4; URL=/account-type?userId=${userId}" />
+                <style>
+                  body {
+                    font-family: 'Segoe UI', sans-serif;
+                    background: #f9fafb;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                  }
+                  .popup {
+                    padding: 30px 40px;
+                    border-radius: 12px;
+                    background: white;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                  }
+                  .popup h2 {
+                    color: #10b981;
+                    margin-bottom: 10px;
+                  }
+                  .popup p {
+                    color: #374151;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="popup">
+                  <h2>🎉 Account Verified!</h2>
+                  <p>Redirecting you to set up your account type...</p>
+                </div>
+              </body>
+            </html>
+        `);
 
     } catch (error) {
-        return res.status(400).json({ error: "Invalid or expired token." });
+        return res.status(400).send(`
+            <h3 style="color: red; text-align: center;">Invalid or expired token</h3>
+        `);
     }
 };
+
 
 
 // Create account information

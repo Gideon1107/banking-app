@@ -1,10 +1,10 @@
-
+import React from 'react'
+import RouterPath from './routes/RouterPath'
 
 function App() {
-
   return (
-    <div>
-      Banking App
+    <div >
+      <RouterPath />
     </div>
   )
 }

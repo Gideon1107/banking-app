@@ -7,8 +7,10 @@ import dotenv from "dotenv";
 import registerRouter from './route/register';
 import loginRouter from './route/login';
 import profileRouter from './route/profile';
-import { db } from './util/db';
-import { users } from './model/schema';
+import paymentRouter from './route/payment'
+import cardRouter from './route/card'
+import beneficiaryRouter from './route/beneficiary'
+import { db } from "./util/db";
 
 dotenv.config();
 
@@ -20,10 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 // Setup connect-pg-simple
 const PgSession = pgSession(session);
 
+
 // Setup session middleware
 app.use(session({
   store: new PgSession({
-    conString: process.env.DATABASE_URL || "postgresql://postgres.bszouzrifbnexmuukeex:bankdevwebsite12@aws-0-eu-west-2.pooler.supabase.com:6543/postgres", 
+    conString: process.env.DATABASE_URL || "postgresql://postgres.bszouzrifbnexmuukeex:56RsirUPBtlNGKcZ@aws-0-eu-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true", 
     tableName: 'session',
     createTableIfMissing: true,
   }),
@@ -37,15 +40,21 @@ app.use(session({
   },
 }));
 
+
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
 
+
 //routes
 app.use("/register", registerRouter);
 app.use("/login", loginRouter);
+app.use("/payment", paymentRouter);
 app.use("/profile", profileRouter);
+app.use("/card", cardRouter);
+app.use("/beneficiary", beneficiaryRouter);
+
 
 app.get("/", (req, res) => {
   res.send("Server is running...");

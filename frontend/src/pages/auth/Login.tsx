@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
+import { useAuthStore } from '../../store/authStore'; 
+
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -8,10 +10,29 @@ function Login() {
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
+    const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const login = useAuthStore((state) => state.login);
+  const error = useAuthStore((state) => state.error);
+  const loading = useAuthStore((state) => state.loading);
+
+
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
     // Add login logic here
+   
+       try {
+   await login(Number(formData.accountNumber), formData.password);
+const user = useAuthStore.getState().user;
+console.log(user);
+if (user) {
+  navigate('/dashboard');
+}
+
+    } catch (err) {
+      console.error('Login attempt failed');
+
+    }
   }
 
   return (
@@ -56,13 +77,19 @@ function Login() {
               Forgot Password?
             </Link>
           </div>
-
-          <button
+ <button
             type="submit"
-            className="w-full bg-gradient-to-r from-text to-[#00388C] text-white py-2.5 px-4 rounded-lg hover:opacity-90 transition-opacity font-semibold"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-text to-[#00388C] text-white py-2.5 px-4 rounded-lg hover:opacity-90 transition-opacity font-semibold disabled:opacity-50"
           >
-            Sign In
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
+
+
+                    {/*  display  backend error message */}
+            {error && (
+            <p className="text-red-600 text-center text-sm">{error}</p>
+          )}
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">

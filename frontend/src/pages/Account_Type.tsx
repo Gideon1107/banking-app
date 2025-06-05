@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaCrown, FaMedal, FaGem } from 'react-icons/fa';
-
+import { useAuthStore } from '../store/registerStore'; // Adjust the import path as necessary
 const Account_Type = () => {
   const navigate = useNavigate();
+    const location = useLocation();
+
   const [selectedType, setSelectedType] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
+    const createAccountInfo = useAuthStore((state) => state.createAccountInfo);
+  const loading = useAuthStore((state) => state.loading);
+  const error = useAuthStore((state) => state.error);
+
+    useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const uid = params.get('userId');
+    if (uid) setUserId(uid);
+  }, [location.search]);
 
   const accountTypes = [
     {
@@ -48,9 +60,17 @@ const Account_Type = () => {
     }
   ];
 
-  const handleSelection = (type: string) => {
+  const handleSelection = async(type: string) => {
+ if (!userId) {
+      alert('User ID is missing. Please activate your account first.');
+      return;
+    }
     setSelectedType(type);
-    // Navigate to signup with account type
+
+    // Call backend to create account info
+    await createAccountInfo({ account_type: type, user_id: userId });
+
+    // After successful creation, navigate to dashboard or another page
     navigate('/dashboard', { state: { accountType: type } });
   };
 

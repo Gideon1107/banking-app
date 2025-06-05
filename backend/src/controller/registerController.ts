@@ -79,8 +79,6 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 }
 
 
-
-
 //Activate user account
 export const activateAccount = async (req: Request, res: Response): Promise<any> => {
 

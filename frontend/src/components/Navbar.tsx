@@ -34,9 +34,11 @@ function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <button className="bg-white text-text px-4 py-1.5 rounded-xl font-semibold border-text border-2">
-              Sign In
-            </button>
+            <Link to="/login">
+              <button className="bg-white hover:bg-text2 hover:text-white cursor-pointer text-text px-4 py-1.5 rounded-xl font-semibold border-text border-2">
+                Sign In
+              </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -69,9 +71,11 @@ function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <button className="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-              Sign In
-            </button>
+            <Link to="/login">
+              <button className="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                Sign In
+              </button>
+            </Link>
           </div>
         )}
       </div>

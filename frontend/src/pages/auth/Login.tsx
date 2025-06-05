@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
-import { FaLock, FaEye, FaEyeSlash, FaQuestionCircle } from 'react-icons/fa'
+import { FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
 
 function Login() {
   const [formData, setFormData] = useState({
-    phone: '',
+    accountNumber: '',
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
@@ -22,18 +20,17 @@ function Login() {
         <h2 className="text-2xl font-bold mb-6 text-center text-black">Sign in</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-text mb-1">Phone Number</label>
+            <label className="block text-sm font-medium text-text mb-1">Account Number</label>
             <div className="relative">
-              <PhoneInput
-                country={'us'}
-                value={formData.phone}
-                onChange={phone => setFormData({...formData, phone})}
-                containerClass="w-full"
-                inputClass="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-12 pr-10"
-                buttonClass="!border-0 !border-r !rounded-l-lg"
-                placeholder="1234567890"
+              <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="number"
+                maxLength={10}
+                className="w-full py-2 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-10"
+                value={formData.accountNumber}
+                onChange={(e) => setFormData({...formData, accountNumber: e.target.value})}
+                placeholder="Enter your account number"
               />
-              <FaQuestionCircle className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-help" />
             </div>
           </div>
           

@@ -65,7 +65,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null, registrationSuccess: false });
     try {
         console.log("Registering user with data:", data);
-      const response = await axios.post('http://localhost:4000/register', data);
+      const response = await axios.post('/register', data);
       set({ registrationSuccess: true, loading: false });
         console.log("Registration successful:", response.data);
 
@@ -81,7 +81,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null, activationSuccess: false });
     try {
       // Activation endpoint returns HTML, but we can call it to verify
-      await axios.get(`http://localhost:4000/register/activate/${token}`);
+      await axios.get(`/register/activate/${token}`);
       set({ activationSuccess: true, loading: false });
     } catch (error: any) {
       set({
@@ -94,7 +94,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   createAccountInfo: async ({ account_type, user_id }) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post('http://localhost:4000/register/createAccountInfo', {
+      const response = await axios.post('/register/createAccountInfo', {
         account_type,
         user_id,
       });

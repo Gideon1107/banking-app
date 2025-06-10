@@ -18,6 +18,7 @@ import Electric from '../components/payments/Electric'
 import Water from '../components/payments/Water'
 import Internet from '../components/payments/Internet'
 import Account_Type from '../pages/Account_Type'
+import LoanDetails from '../pages/dashboard/LoanDetails'
 
 function RouterPath() {
   return (
@@ -49,7 +50,10 @@ function RouterPath() {
             <Route path="change" element={<ChangePin />} />
           </Route>
 
-          <Route path="loan" element={<Loan />} />
+          <Route path="loan">
+            <Route index element={<Loan />} />
+            <Route path="details" element={<LoanDetails />} />
+          </Route>
           <Route path="live-chat" element={<Live />} />
           <Route path="profile" element={<Profile />} />
         </Route>

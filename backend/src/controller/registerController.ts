@@ -5,12 +5,12 @@ import { db } from "../util/db";
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import { users, accountDetails } from "../model/schema";
-import { generateAccountNumber } from '../util/generateAcct';
+import { generateAccountNumber,generateCvv, generateDebitCardNumber } from '../util/generate';
 
 
 // Register new user
 export const register = async (req: Request, res: Response): Promise<any> => {
-
+ 
     //Generate JWT secret
     const JWT_SECRET = process.env.JWT_SECRET || 'gfdhvbdfye3uwt352gwebstw2y282shddte3heydwbh3ydehnen';
 
@@ -67,62 +67,104 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 
 
     return res.status(201).json({
+        newUser: newUser,
       message: 'User registered successfully. Please check your email to activate your account.'
     });
 
 
   } catch (error) {
-
+    console.error("Registration error details:", error); 
         return res.status(500).json({ error: 'Internal server error during registration.' });
     }
 }
 
 
-
-
 //Activate user account
 export const activateAccount = async (req: Request, res: Response): Promise<any> => {
-
     const { token } = req.params;
 
     if (!token) {
-        return res.status(400).json({ error: "Token is required" });
+        return res.status(400).send(`
+            <h3 style="color: red; text-align: center;">Token is missing</h3>
+        `);
     }
 
     try {
-        // Verify the token
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'gfdhvbdfye3uwt352gwebstw2y282shddte3heydwbh3ydehnen');
 
-
         const checkUser = await db.select().from(users).where(eq(users.email, decoded.email));
+        console.log("Decoded email:", decoded.email);
 
         if (!checkUser[0]) {
-            return res.status(404).json({ error: "Invalid activation link." });
+            return res.status(404).send(`
+                <h3 style="color: red; text-align: center;">Invalid activation link.</h3>
+            `);
         }
 
         const userId = checkUser[0].id;
 
-        // Update the user's isactive status
-        const response = await db.update(users)
+        await db.update(users)
             .set({ isactive: true })
             .where(eq(users.email, decoded.email));
-        if (!response) {
-            return res.status(404).json({ error: "unable to update " });
-        }
 
-        return res.status(200).json({ message: "Account activated successfully.", userId });
+        return res.status(200).send(`
+            <html>
+              <head>
+                <title>Account Activated</title>
+                <style>
+                  body {
+                    font-family: 'Segoe UI', sans-serif;
+                    background: #f9fafb;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                  }
+                  .popup {
+                    padding: 30px 40px;
+                    border-radius: 12px;
+                    background: white;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                  }
+                  .popup h2 {
+                    color: #10b981;
+                    margin-bottom: 10px;
+                  }
+                  .popup p {
+                    color: #374151;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="popup">
+                  <h2>🎉 Account Verified!</h2>
+                  <p>Redirecting you to set up your account type...</p>
+                </div>
+                <script>
+                  setTimeout(() => {
+                    window.location.href = "http://localhost:5173/account_type?userId=${userId}";
+                  }, 3000);
+                </script>
+              </body>
+            </html>
+        `);
 
     } catch (error) {
-        return res.status(400).json({ error: "Invalid or expired token." });
+        return res.status(400).send(`
+            <h3 style="color: red; text-align: center;">Invalid or expired token</h3>
+        `);
     }
 };
+
+
 
 
 // Create account information
 export const createAccountInfo = async (req: Request, res: Response): Promise<any> => {
     const { account_type, user_id } = req.body;
-
-
+  
     if (!account_type && !user_id) {
         return res.status(400).json({ error: "Account type and user ID are required." });
     }
@@ -149,17 +191,29 @@ export const createAccountInfo = async (req: Request, res: Response): Promise<an
         }
         //Generate a unique account number
         const account_number = await generateAccountNumber();
+        const debitCard_number = await generateDebitCardNumber();
 
 
         if (!account_number) {
             return res.status(404).json({ error: "Unable to generate account number" });
         }
 
+        if(!debitCard_number){
+            return res.status(404).json({ error: "Unable to generate debit card number" });
+        }
+
+        const cvv = await generateCvv();
+        if (!cvv) {
+            return res.status(404).json({ error: "Unable to generate CVV" });
+        }
         //Insert account details into the database
         const response = await db.insert(accountDetails).values({
             account_number,
             account_type: account_Type,
-            user_id: user_id
+            user_id: user_id,
+            debit_number: debitCard_number,
+            cvv: cvv,
+            card_pin: '1234', // Default PIN, should be changed by the user      
         }).returning();
 
 

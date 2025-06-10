@@ -1,7 +1,8 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../../assets/logo2.svg";
 import { RiHomeLine, RiWalletLine, RiMoneyDollarCircleLine, RiCustomerService2Line, RiUserLine } from 'react-icons/ri';
+import { useAuthStore } from "../../store/authStore";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,9 +11,16 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const location = useLocation();
+ const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
+
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+   const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   return (
@@ -143,6 +151,19 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                 <RiUserLine className="mr-3 text-xl" />
                 Profile
               </Link>
+            </li>
+              <li>
+              <Link
+              onClick={handleLogout}
+                to="/dashboard/profile"
+                className={`flex items-center font-semibold p-2 rounded-4xl transition-all duration-300 ${
+                  isActive('/login/logout')
+                    ? 'bg-white text-blue-500'
+                    : 'hover:bg-white hover:text-blue-500'
+                }`}
+              >
+                <RiUserLine className="mr-3 text-xl" />
+Logout              </Link>
             </li>
           </ul>
         </nav>

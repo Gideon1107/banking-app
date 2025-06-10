@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import PhoneInput from "react-phone-input-2";
+// import PhoneInput from "react-phone-input-2"; // use email instead
 import "react-phone-input-2/lib/style.css";
 import { FaLock, FaEye, FaEyeSlash, FaQuestionCircle } from "react-icons/fa";
 import CountryPicker from "../../components/CountryPicker";
 import { HiArrowRight } from "react-icons/hi";
 import SuccessPopup from "../../components/common/SuccessPopup";
+import {useAuthStore} from "../../store/registerStore";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ function Signup() {
     lastName: "",
     dob: "",
     nationality: "",
-    phone: "",
+    email: "",
     password: "",
     // pin: "",
     address: "",
@@ -23,10 +24,65 @@ function Signup() {
   const [showPin, setShowPin] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const register = useAuthStore((state) => state.register);
+  const registrationSuccess = useAuthStore((state) => state.registrationSuccess);
+  const error = useAuthStore((state) => state.error);
+  const loading = useAuthStore((state) => state.loading);
+  const clearErrors = useAuthStore((state) => state.clearErrors);
+
+    useEffect(() => {
+    if (registrationSuccess && !error) {
+      setShowSuccessPopup(true);
+    }
+  }, [registrationSuccess, error]);
+
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
+      clearErrors();
     // Add signup logic here
-    setShowSuccessPopup(true);
+
+      const {
+      firstName,
+      lastName,
+      dob,
+      nationality,
+      email,
+      password,
+      address,
+    } = formData;
+
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !dob ||
+      !nationality ||
+      !email.trim() ||
+      !password.trim() ||
+      !address.trim()
+    ) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      await register({
+        firstName,
+        lastName,
+        dob,
+        nationality,
+        email, 
+        password,
+        address,
+      });
+
+    } catch (err) {
+      // Error handled in the store
+      console.error("Registration error:", err);
+      alert(error || "An error occurred during registration.");
+
+      return;
+    }
+  
   };
 
   return (
@@ -93,18 +149,28 @@ function Signup() {
 
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Phone Number
+              Email Address
             </label>
             <div className="relative">
-              <PhoneInput
+              {/* <PhoneInput
                 country={"us"}
-                value={formData.phone}
-                onChange={(phone) => setFormData({ ...formData, phone })}
+                value={formData.email}
+                onChange={(email) => setFormData({ ...formData, email })}
                 containerClass="w-full"
                 inputClass="w-full py-2.5 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent pl-12 pr-10"
                 buttonClass="!border-0 !border-r !rounded-l-lg"
                 placeholder="1234567890"
-              />
+              /> */}
+
+<input
+  type="email"
+  value={formData.email}
+  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+  placeholder="Enter your email"
+  required
+  className="border rounded px-3 py-2 w-full"
+/>
+
             </div>
           </div>
 
@@ -198,6 +264,11 @@ function Signup() {
               <HiArrowRight className="w-5 h-5" />
             </button>
           </div>
+
+                       {/*  display  backend error message */}
+            {error && (
+            <p className="text-red-600 text-center text-sm">{error}</p>
+          )}
         </form>
 
         <p className="mt-6 text-center text-sm text-black">

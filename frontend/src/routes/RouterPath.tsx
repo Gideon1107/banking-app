@@ -19,6 +19,8 @@ import Water from '../components/payments/Water'
 import Internet from '../components/payments/Internet'
 import Account_Type from '../pages/Account_Type'
 import LoanDetails from '../pages/dashboard/LoanDetails'
+import Withdraw from '../components/payments/Withdraw'
+import Mobile from '../components/payments/Mobile'
 
 function RouterPath() {
   return (
@@ -41,7 +43,8 @@ function RouterPath() {
             <Route path="electric" element={<Electric />} />
             <Route path="water" element={<Water />} />
             <Route path="internet" element={<Internet />} />
-
+            <Route path="withdraw" element={<Withdraw />} />
+            <Route path="mobile" element={<Mobile />} />
           </Route>
 
           <Route path="cards" >

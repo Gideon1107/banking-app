@@ -6,11 +6,11 @@ const Electric = () => {
     meterNumber: ''
   });
 
-  const waterCompanies = [
-    'Water Corporation',
-    'City Water Board',
-    'Metropolitan Water',
-    'Regional Water Supply'
+  const ElectricCompanies = [
+    'Electric Corporation',
+    'City Electric Board',
+    'Metropolitan Electric',
+    'Regional Electric Supply'
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -24,7 +24,7 @@ const Electric = () => {
 
   return (
     <div className='font-plus'>
-      <h1 className="text-2xl text-center font-plus font-bold mt-8 text-text">Water Bill Payment</h1>
+      <h1 className="text-2xl text-center font-plus font-bold mt-8 text-text">Electric Bill </h1>
       <div className='flex-col bg-[#FFFFFF] shadow-2xl flex font-plus space-y-6 p-8 mt-6 max-w-xl mx-auto rounded-2xl'>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-6">
@@ -37,7 +37,7 @@ const Electric = () => {
                 required
               >
                 <option value="">Choose company</option>
-                {waterCompanies.map((company) => (
+                {ElectricCompanies.map((company) => (
                   <option key={company} value={company}>{company}</option>
                 ))}
               </select>

@@ -7,10 +7,14 @@ const Internet = () => {
   });
 
   const InternetCompanies = [
-    'Internet Corporation',
-    'City Internet Board',
-    'Metropolitan Internet',
-    'Regional Internet Supply'
+    'MTN Internet',
+    'Airtel Broadband',
+    'Glo Fiber',
+    '9mobile Internet',
+    'Spectranet',
+    'Swift Networks',
+    'SMILE Internet',
+    'ipNX Nigeria'
   ];
 
   const handleSubmit = (e: React.FormEvent) => {

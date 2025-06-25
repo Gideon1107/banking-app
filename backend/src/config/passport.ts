@@ -76,15 +76,28 @@ passport.serializeUser((user: any, done) => {
 //deserialize user
 passport.deserializeUser(async (id: number, done) => {
     try {
-        const user = await db.select()
+        // Get the user
+        const userArr = await db.select()
           .from(users)
           .where(eq(users.id, String(id)));
 
-        if (!user[0]) {
-            return done(null, false);
-        }
+        const user = userArr[0];
 
-        done(null, user[0]);
+        if (!user) return done(null, false);
+
+        // Get the account info for this user
+        const acctArr = await db.select()
+          .from(accountDetails)
+          .where(eq(accountDetails.user_id, user.id));
+        const account = acctArr[0];
+
+        // Combine user and account info as in your login strategy
+        const userWithAccount = {
+            ...user,
+            account: account || null,
+        };
+
+        done(null, userWithAccount);
     } catch (error) {
         done(error);
     }

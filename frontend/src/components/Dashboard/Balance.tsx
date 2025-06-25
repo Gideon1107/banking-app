@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { HiArrowRight } from "react-icons/hi";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import { useAuthStore } from "../../store/authStore"; 
+import { authStore } from "../../store/authStore"; 
 
 function Balance() {
   const [showBalance, setShowBalance] = useState(true);
   const [balance , setBalance] = useState(0);
 
- const user = useAuthStore((state) => state.user);
-  const isAuthenticated = useAuthStore.getState().isAuthenticated;
+ const user = authStore((state) => state.user);
+  const isAuthenticated = authStore.getState().isAuthenticated;
 
 
   useEffect(() => {
-    console.log("User data:",user?.account?.account_balance);
+    console.log("User data:",user);
       setBalance(Number(user?.account?.account_balance) || 0);
   }, [user]);
 

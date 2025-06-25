@@ -63,7 +63,9 @@ export const paymentStore = create<PaymentState>((set) => ({
   transfer: isAuthenticated(async (data: any) => {
     set({ loading: true });
     try {
+      console.log("Transfer Data:", data);
       const res = await axios.post('/payment/transfer', data);
+      console.log("Transfer Response:", res.data);
       set({ successMessage: res.data.message });
     } catch (err: any) {
       set({ error: err.response?.data?.error || 'Transfer failed' });

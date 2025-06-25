@@ -3,14 +3,18 @@ import Service from '../../components/Dashboard/Service';
 import Balance from '../../components/Dashboard/Balance';
 
 
-import { useAuthStore } from '../../store/authStore'; // Adjust the import path as necessary
+import { authStore } from '../../store/authStore'; // Adjust the import path as necessary
 
 const Home = () => {
-   const user = useAuthStore.getState().user;
+  const user = authStore((state) => state.user);
+  const loading = authStore((state) => state.loading);
+  const error = authStore((state) => state.error);
+  const fetchSession = authStore((state) => state.fetchSession);
 
- useEffect(() => {
-    useAuthStore.getState().fetchSession();
- })
+  useEffect(() => {
+    fetchSession();
+  }, [fetchSession]);
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good Morning';

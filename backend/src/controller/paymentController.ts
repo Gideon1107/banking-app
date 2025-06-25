@@ -122,16 +122,18 @@ const withdrawPayment = async (req: Request, res: Response): Promise<any> => {
 //Transfer
 const transferPayment = async (req: Request, res: Response): Promise<any> => {
   const { account_number, transaction_type, amount, recipent_account, reference } = req.body;
-
+console.log(req.body)
   const upperCaseTransactionType = transaction_type.trim().toLowerCase(); 
 
   if (!account_number || !amount || !recipent_account || !upperCaseTransactionType) {
-    return res.status(400).json({ error: "Account number, amount, and recipient account are required." });
+    res.status(400).json({ error: "Account number, amount, and recipient account are required." });
+    return;
   }
 
   const parsedAmount = parseFloat(amount);
   if (isNaN(parsedAmount) || parsedAmount <= 0) {
-    return res.status(400).json({ error: "Invalid amount value." });
+  res.status(400).json({ error: "Invalid amount value." });
+     return
   }
 
   try {
@@ -140,40 +142,46 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
     
 
     if (!senderAccount) {
-      return res.status(404).json({ error: "Sender account not found." });
+      res.status(400).json({ error: "Sender account not found." });
+      return 
     }
 
     if (!recipientAccount) {
-      return res.status(404).json({ error: "Receiver account not found." });
+    res.status(400).json({ error: "Receiver account not found." });
+      return 
     }
 
     const senderBalance = Number(senderAccount.account_balance);
  
     if (parsedAmount > senderBalance) {
-      return res.status(400).json({ error: "Insufficient funds in sender's account." });
+     res.status(400).json({ error: "Insufficient funds in sender's account." });
+      return 
     }
 
     const senderInfo = await getDetailsByUserId(senderAccount.user_id)
     const recipientInfo = await getDetailsByUserId(recipientAccount.user_id)
     if (!senderInfo) {
-      return res.status(404).json({ error: "Sender user details not found." });
+     res.status(400).json({ error: "Sender user details not found." });
+      return;
     }
     if (!recipientInfo) {
-      return res.status(404).json({ error: "Recipient user details not found." });
+     res.status(400).json({ error: "Recipient user details not found." });
+       return
     }
     // Update both sender and recipient balances
     const updatedSenderAccount = await updateAccountBalance(account_number, senderBalance - parsedAmount);
     
     const updatedRecipientAccount = await updateAccountBalance(recipent_account, Number(recipientAccount.account_balance) + parsedAmount);
     if(!updatedSenderAccount && !updatedRecipientAccount){
-      return res.status(500).json({error: "failed to update payment"})
+     res.status(500).json({error: "failed to update payment"})
+       return
     }
     // Record the transactions
     const recordSenderResult = await recordPayment(account_number, upperCaseTransactionType, amount, recipent_account, reference);
     const recordRecipientResult = await recordPayment(recipent_account, "deposit", amount, account_number, "Deposit Transfer");
 
     if (!recordSenderResult || !recordRecipientResult) {
-      return res.status(500).json({ error: "Failed to record transaction." });
+ res.status(500).json({ error: "Failed to record transaction." });
     }
 
     await  sendUpdateNotification({
@@ -186,14 +194,14 @@ const transferPayment = async (req: Request, res: Response): Promise<any> => {
     subject: 'New Depsoit',
     html: `<p>Hello ${recipientInfo.firstname},</p><p> You recieved  $${amount} from account number ${account_number}.</p><p>Click to Sign-In.</p>`,
 });
-    return res.status(200).json({
+    res.status(200).json({
       message: "Transfer successful",
       senderAccount: updatedSenderAccount,
       recipientAccount: updatedRecipientAccount
     });
   } catch (error) {
     console.error("Error processing transfer:", error);
-    return res.status(500).json({ error: "Internal server error" });
+  res.status(500).json({ error: "Internal server error" });
   }
 };
 

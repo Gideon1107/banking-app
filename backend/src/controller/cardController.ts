@@ -148,12 +148,19 @@ const viewCardDetails = async (req: Request, res: Response): Promise<any> => {
 // Change PIN
 const changePin = async (req: Request, res: Response): Promise<any> => {
     const { account_number, old_pin, new_pin } = req.body;
+    console.log("Change PIN Request:", req.body);
 
-    if (!account_number || !old_pin || !new_pin) {
-        return res.status(400).json({ error: "Account number, old PIN, and new PIN are required." });
+    // Check that all values are numbers
+    if (
+        typeof account_number !== 'number' ||
+        typeof old_pin !== 'number' ||
+        typeof new_pin !== 'number'
+    ) {
+        return res.status(400).json({ error: "Account number, old PIN, and new PIN must be numbers." });
     }
 
-    if (new_pin.length !== 4 || isNaN(Number(new_pin))) {
+    // Validate new_pin is a 4-digit number
+    if (new_pin.toString().length !== 4 || isNaN(new_pin)) {
         return res.status(400).json({ error: "New PIN must be a 4-digit number." });
     }
 
@@ -165,25 +172,24 @@ const changePin = async (req: Request, res: Response): Promise<any> => {
             return res.status(404).json({ error: "Account not found." });
         }
 
-        if (account[0].card_pin !== old_pin) {
+        if (Number(account[0].card_pin) !== old_pin) {
             return res.status(400).json({ error: "Old PIN is incorrect." });
         }
 
-        // Update PIN
         await db.update(accountDetails)
-            .set({ card_pin: new_pin })
+            .set({ card_pin: new_pin })  // Set as number
             .where(eq(accountDetails.account_number, account_number));
         
-            const userInfo = await getDetailsByUserId(account[0].user_id);
-            if (!userInfo) {
-                return res.status(404).json({ error: "User not found." });
-            }
-        
-            await  sendUpdateNotification({
-                to: userInfo.email,
-                subject: 'Pin Changed',
-                html: `<p>Hello ${userInfo.firstname},</p><p> Your Pin has been changed successfully.</p><p>Click to Sign-In.</p>`,
-            });
+        const userInfo = await getDetailsByUserId(account[0].user_id);
+        if (!userInfo) {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        await sendUpdateNotification({
+            to: userInfo.email,
+            subject: 'Pin Changed',
+            html: `<p>Hello ${userInfo.firstname},</p><p>Your PIN has been changed successfully.</p><p>Click to Sign-In.</p>`,
+        });
 
         return res.status(200).json({ message: "PIN changed successfully." });
     } catch (error) {
@@ -191,5 +197,7 @@ const changePin = async (req: Request, res: Response): Promise<any> => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
+
 
 export { cardDeposit, cardWithdraw, viewCardDetails, changePin };

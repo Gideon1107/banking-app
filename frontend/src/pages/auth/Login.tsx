@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaLock, FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
-import { useAuthStore } from '../../store/authStore'; 
+import { authStore } from '../../store/authStore'; 
 
 
 function Login() {
@@ -11,10 +11,8 @@ function Login() {
   })
   const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate();
+const {login, error, loading, user } = authStore.getState();
 
-  const login = useAuthStore((state) => state.login);
-  const error = useAuthStore((state) => state.error);
-  const loading = useAuthStore((state) => state.loading);
 
 
   const handleSubmit = async(e: React.FormEvent) => {
@@ -23,7 +21,7 @@ function Login() {
    
        try {
    await login(Number(formData.accountNumber), formData.password);
-const user = useAuthStore.getState().user;
+const user = authStore.getState().user;
 console.log(user);
 if (user) {
   navigate('/dashboard');

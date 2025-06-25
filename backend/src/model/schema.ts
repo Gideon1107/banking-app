@@ -28,7 +28,7 @@ export const accountDetails = pgTable("accountDetails", {
   account_balance: decimal("account_balance", { precision: 12, scale: 2 }).default("0.00"),
   created_at: timestamp("created_at").defaultNow(),
   debit_number: varchar("debit_number", { length: 22 }).unique(), 
-  card_pin: varchar("card_pin", { length: 4 }).notNull(), // Added card PIN
+card_pin: integer("card_pin").notNull(), // Added card pin
   cvv: integer("cvv").notNull(), // Added CVV
   card_issued_date: date("card_issued_date").defaultNow(), // Added card issued date
   card_expiry_date: date("card_expiry_date")

@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../../assets/logo2.svg";
 import { RiHomeLine, RiWalletLine, RiMoneyDollarCircleLine, RiCustomerService2Line, RiUserLine } from 'react-icons/ri';
-import { useAuthStore } from "../../store/authStore";
+import { authStore } from "../../store/authStore";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,7 +12,7 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const location = useLocation();
  const navigate = useNavigate();
-  const logout = useAuthStore((state) => state.logout);
+  const logout = authStore((state) => state.logout);
 
 
   const isActive = (path: string) => {

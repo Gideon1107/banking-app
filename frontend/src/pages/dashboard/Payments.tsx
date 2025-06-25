@@ -56,14 +56,14 @@ const Payments = () => {
               ))}
             </select>
           </div>
-          <Link to='/dashboard/payments/details'>
+        
             <button
               type="submit"
               className="w-full bg-text text-white py-3 rounded-lg hover:bg-text2 transition-colors mt-6"
             >
               Next
             </button>
-          </Link>
+
         </form>
       </div>
     </div>

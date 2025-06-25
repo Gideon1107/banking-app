@@ -40,9 +40,9 @@ interface CardStoreState {
   viewCardDetails: (account_number: string) => Promise<void>;
 
   changePin: (form: {
-    account_number: string;
-    old_pin: string;
-    new_pin: string;
+    account_number: number;
+    old_pin:  number;
+    new_pin: number;
   }) => Promise<void>;
 
   clearStatus: () => void;

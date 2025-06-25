@@ -5,7 +5,7 @@ export interface Account {
   user_id: string | number;
   account_balance: string;
   created_at: string;
-  debit_number: string;
+  debit_number: number;
   card_pin: string;
   cvv: number;
   card_issued_date: string;

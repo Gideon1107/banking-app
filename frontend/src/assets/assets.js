@@ -12,7 +12,8 @@ import frame from './Frame.png';
 import girl from './girl.jpg' ;
 import electric from './electric.png';
 import water from './water.png';
-import internet from './internet.png'
+import internet from './internet.png';
+import illustration from './illustration7.png';  
 
 export  const assets ={
     logo,
@@ -29,5 +30,6 @@ export  const assets ={
     girl,
     electric,
     water,
-    internet
+    internet,
+    illustration
 }

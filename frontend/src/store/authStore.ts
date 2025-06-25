@@ -2,9 +2,11 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
+// sending coockies with axios requests
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:4000';
 
+// interfaces for User and AuthState
 interface User {
   id: string;
   email: string;

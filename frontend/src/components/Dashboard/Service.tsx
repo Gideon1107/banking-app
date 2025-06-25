@@ -14,7 +14,7 @@ function Service() {
     { icon: wallet, title: "Account and Card", path: "/dashboard/profile" },
     { icon: transfer, title: "Transfer", path: "/dashboard/payments" },
     { icon: withdraw, title: "Withdraw", path: "/dashboard/payments/withdraw" },
-    { icon: mobile, title: "Mobile Recharge", path: "/dashboard/payments/internet" },
+    { icon: mobile, title: "Mobile Recharge", path: "/dashboard/payments/mobile" },
     { icon: receipt, title: "Pay the bills", path: "/dashboard/payments/bills" },
     { icon: credit, title: "Credit Card", path: "/dashboard/cards" },
   ];

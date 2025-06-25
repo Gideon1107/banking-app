@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import girl from "../../assets/girl.jpg";
 
 const Details = () => {
@@ -7,10 +8,18 @@ const Details = () => {
     amount: "",
     description: "",
   });
-
+  const { state } = useLocation();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle transfer logic here
+    if(!formData.amount || !formData.description) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    try {
+      formData.append("accountNumber", state.accountNumber);
+      formData.append("bank", state.bank);
+    }
   };
 
   return (

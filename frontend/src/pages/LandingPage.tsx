@@ -1,11 +1,13 @@
 import Navbar from "../components/Navbar";
-import React from "react";
+import React, { use, useEffect } from "react";
 import card from "../assets/card.svg";
 import coin from "../assets/coin1.jpeg";
 import { HiArrowRight } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
+
 function LandingPage() {
+  
   return (
     <div className="overflow-x-hidden">
       <Navbar />

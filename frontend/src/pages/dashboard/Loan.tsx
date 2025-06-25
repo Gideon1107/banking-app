@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Loan = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     // accountNumber: '',
     loanAmount: '',
@@ -19,7 +20,7 @@ const Loan = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle transfer logic here
+    navigate('/dashboard/loan/details', { state: { loanData: formData } });
   };
 
   const isFormValid = () => {

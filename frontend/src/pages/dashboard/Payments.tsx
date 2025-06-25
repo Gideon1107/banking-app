@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const Payments = () => {
   const [formData, setFormData] = useState({
     accountNumber: '',
     bank: '',
   });
+  const navigate = useNavigate();
 
   const banks = [
     'Access Bank',
@@ -18,6 +20,7 @@ const Payments = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle transfer logic here
+     navigate('/dashboard/payments/details', { state: { accountNumber: formData.accountNumber, bank: formData.bank } });
   };
 
   return (

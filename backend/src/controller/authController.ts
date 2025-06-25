@@ -45,7 +45,15 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
   })(req, res, next);
 };
 
-
+export const getSession = (req: Request, res: Response) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    // Remove sensitive data before sending user
+    const { password, ...safeUser } = req.user as any;
+    res.status(200).json({ user: safeUser });
+  } else {
+    res.status(401).json({ user: null, message: 'No active session' });
+  }
+};
 //Logout user
 export const logout = (req: Request, res: Response) => {
   req.logout((err) => {

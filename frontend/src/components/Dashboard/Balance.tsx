@@ -1,10 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiArrowRight } from "react-icons/hi";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import { useAuthStore } from "../../store/authStore"; 
 
 function Balance() {
   const [showBalance, setShowBalance] = useState(true);
+  const [balance , setBalance] = useState(0);
 
+ const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore.getState().isAuthenticated;
+
+
+  useEffect(() => {
+    console.log("User data:",user?.account?.account_balance);
+      setBalance(Number(user?.account?.account_balance) || 0);
+  }, [user]);
+
+  // if(!isAuthenticated || !user) {
+  //   return (
+  //     <div className="text-center text-red-500">
+  //       Please log in to view your balance.
+  //     </div>
+  //   );
+  // }
   return (
     <div>
       <div className="flex-col flex font-plus space-y-6 bg-bal p-4 mt-6 rounded-2xl">
@@ -29,7 +47,7 @@ function Balance() {
         <div className="flex-row flex justify-between mx-4 mt-6">
           <div>
             <h1 className="text-text font-bold text-xl sm:text-2xl">
-              {showBalance ? "$4560.69" : "••••••"}
+              {showBalance ? balance.toFixed(2) : "••••••"}
             </h1>
           </div>
           <div>
